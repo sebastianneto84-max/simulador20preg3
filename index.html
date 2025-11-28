@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulador de Ingreso a la Universidad</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script>
+    function checkDeviceAndBrowser() {
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isChrome = navigator.userAgent.indexOf("Chrome") > -1;
+      const isEdge = navigator.userAgent.indexOf("Edg") > -1;
+      if (isMobile || !isChrome || isEdge) {
+        alert("Para una experiencia óptima, por favor, ingresa desde Google Chrome en un PC.");
+        window.location.href = "about:blank"; 
+      }
+    }
+    checkDeviceAndBrowser();
+  </script>
+  
+  <script>
+    history.pushState(null, document.title, location.href);
+    window.addEventListener('popstate', function (event) {
+        history.pushState(null, document.title, location.href);
+    });
+    
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'F5' || (event.ctrlKey && event.key === 'r') || (event.metaKey && event.key === 'r')) {
+            event.preventDefault();
+        }
+    });
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyA6WX35NbMAm7rCSkudjY1CZ2C9gDtW74A",
+      authDomain: "simulador-quiz20-2.firebaseapp.com",
+      projectId: "simulador-quiz20-2",
+      storageBucket: "simulador-quiz20-2.firebasestorage.app",
+      messagingSenderId: "306341514815",
+      appId: "1:306341514815:web:feaaad2e8501812141728a"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+  </script>
+  
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+  <div id="login-page" class="intro-page">
+    <h1>Iniciar Sesión</h1>
+    <input type="email" id="email" placeholder="Correo" class="input"><br>
+    <input type="password" id="password" placeholder="Contraseña" class="input"><br>
+    <button class="start-button" onclick="login()">Ingresar</button>
+  </div>
+
+  <div id="app-container" style="display:none;">
+    <div id="intro-page-container" class="intro-page">
+      <img src="imagenes/imagenlogo.png" alt="Logo de la Universidad" class="logo" style="width: 250px; margin-bottom: 40px;">
+      <h1>Simulador de Ingreso a la Universidad</h1>
+      <p>
+        <strong>Este simulador está diseñado para que, quién lo realice, practique los ejercicios sobre tres habilidades de razonamiento: matemático, espacial y verbal, mismos que son utilizados por todas las universidades ecuatorianas, en mayor o menor proporción, para evaluar las aptitudes de los aspirantes y así obtener un cupo y ser admitido para estudiar una carrera de tercer nivel.
+        Esta prueba cuestionario consta de 15 ejercicios: seis (6) de razonamiento matemático, cuatro (4) de razonamiento espacial y cinco (5) de razonamiento verbal, todos de opción múltiple; cada uno tiene cuatro opciones y solo una es correcta; estos ejercicios son muy similares a los que tendrá que resolver cuando postule a la universidad de su preferencia.
+        El tiempo total permitido es de 18 minutos, es decir, 1,2 minutos por ejercicio, en promedio; también similar al tiempo dado en una prueba real.
+        ¡Buena suerte!<strong>
+      </p>
+      <button class="start-button" onclick="startQuiz()">¡Empezar Examen!</button>
+    </div>
+
+    <div id="quiz-page" style="display:none; flex-direction: row;">
+      <div class="main-content">
+        <h2 id="section-title"></h2>
+        <div id="question-container"></div>
+        <div class="main-navigation-buttons">
+          <button id="prev-btn" onclick="prevQuestion()" style="display:none;">Anterior</button>
+          <button id="flag-btn" onclick="toggleFlaggedQuestion()"><i class="fas fa-flag"></i> Marcar Pregunta</button>
+          <button id="next-btn" onclick="nextQuestion()">Siguiente</button>
+        </div>
+      </div>
+      <div class="sidebar">
+        <img src="imagenes/imagenlogo.png" alt="Logo de la Universidad" class="logo">
+        <h3>Tiempo Restante</h3>
+        <div id="timer">18:00</div>
+        <h3>Navegación</h3>
+        <div class="nav-panel">
+          <h4>Aptitud Matemática</h4>
+          <div id="math-nav-buttons" class="nav-buttons-block"></div>
+          <h4>Aptitud Espacial</h4>
+          <div id="spatial-nav-buttons" class="nav-buttons-block"></div>
+          <h4>Aptitud Verbal</h4>
+          <div id="verbal-nav-buttons" class="nav-buttons-block"></div>
+        </div>
+        <button id="submit-btn" onclick="submitQuiz()">Enviar Examen</button>
+      </div>
+    </div>
+
+    <div id="results-page" class="container" style="display:none;">
+      <div class="results-header">
+        <img src="imagenes/imagenlogo.png" alt="Logo de la Universidad" class="logo" style="width: 200px;">
+        <h1>Resultados del Examen</h1>
+        <p class="results-score">Cargando...</p>
+        <button class="start-button" onclick="logoutAndReload()">Volver a Empezar</button>
+      </div>
+      <div id="results-content" class="results-section"></div>
+    </div>
+  </div>
+
+  <script src="login.js"></script>
+  <script src="quiz.js"></script>
+</body>
+</html>
